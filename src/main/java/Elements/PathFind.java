@@ -51,16 +51,25 @@ public class PathFind {
         Point s = new Point(start, 0);
         pq.add(s);
         Point curr = s;
+
+        Point pathUnavailable = new Point(end, 0, new PointHistory(start));
+
         while (!pq.isEmpty() && !curr.equalsPoint(end)) {
             curr = pq.poll();
+
+            float pathLength = 2f;
+
             if (curr == null) {
-                curr = new Point(end, 0, new PointHistory(start));
+                curr = pathUnavailable;
                 break;
             }
 
             visited.add(curr.cords);
 
-            for (int x = -1; x <= 1; x++)
+            if (curr.cords.distanceSq(end) <= 40 * 40)
+                pathLength = 1f;
+
+            for (float x = -pathLength; x <= pathLength; x += pathLength)
                 for (int y = -1; y <= 1; y++) {
                     if (!(x == 0 || y == 0))
                         continue;
@@ -90,6 +99,8 @@ public class PathFind {
             if (curr.equalsPoint(end))
                 break;
         }
+        if (!curr.equalsPoint(end))
+            curr = pathUnavailable;
         return curr.history.getHistory();
     }
 
@@ -98,16 +109,12 @@ public class PathFind {
     }
 
     private double calculateCost(Point point, Point2D goal) {
-//        double cost = point.cords.distance(goal);//distanceSq
         double ady = Math.abs(point.cords.getY() - goal.getY());
         double adx = Math.abs(point.cords.getX() - goal.getX());
-        double cost = ady + adx;//Math.max(adx, ady);
-        double firstDeduction = .7;
-        double latterDeduction = .9;
-//        int maxDepth = 25;
-        //double length =point.history.length/300.;
-        //double lengthPenalty = length*length+1;
-        // Math.pow(Math.E, point.history.length / 100.) / 0.5;//10 * Math.log(point.history.length + 1) + 1;
+        double cost = ady + adx;
+
+        double firstDeduction = .8;
+        double latterDeduction = .95;
 
         double xFactor = Math.sin(Math.atan2(ady, adx));
         double yFactor = Math.cos(Math.atan2(ady, adx));
@@ -117,15 +124,11 @@ public class PathFind {
         PointHistory hist = point.history;
         Point2D last = point.cords;
         Point2D curr = last;
-//        int depth = 0;
-//        int flatLength = 0;
+
         double dirX = 10;
         double dirY = 10;
         boolean firstFlat = true;
         while (hist != null) {
-//            if (firstFlat && depth >= maxDepth)
-//                firstFlat = false;
-//            cost = cost * lengthPenalty;
             if (curr != last) {
                 if (dirX == 10 || dirY == 10) {
                     dirX = Math.signum(curr.getX() - last.getX());
@@ -134,37 +137,31 @@ public class PathFind {
                 }
                 double currDirX = Math.signum(point.cords.getX() - last.getX());
                 double currDirY = Math.signum(point.cords.getY() - last.getY());
+
                 if (currDirX == dirX && currDirY == dirY) {
                     if (((point.cords.getX() - last.getX()) == 0 ||
                             (point.cords.getY() - last.getY()) == 0)) {
-//                        flatLength++;
                         if (firstFlat)
                             cost = cost * firstDeduction;
+
                         else cost = cost * latterDeduction;
-                    } else {
-                        firstFlat = false;
-//                        flatLength = 0;
-                    }
+
+                    } else firstFlat = false;
                 } else {
                     firstFlat = false;
                     curr = last;
-//                    flatLength = 0;
                     dirY = dirX = 10;
-                    cost = cost * 5;
+                    cost = cost * 1.2;
                 }
             }
-            //cost = cost * 100./(flatLength+100);
 
             last = hist.point;
             hist = hist.history;
-//            depth++;
             if (cost < -200)
                 return Double.MAX_VALUE;
         }
 
         cost = cost + 1 * cost * turnFactor;
-        //cost = cost * lengthPenalty;
-//        System.out.println(turns);
         return cost;
     }
 }

@@ -2,7 +2,6 @@ import Elements.NodeTree;
 import Elements.Nodes.Process;
 import Elements.Nodes.*;
 import Elements.Side;
-import javafx.geometry.Bounds;
 
 import javax.swing.*;
 import java.awt.*;
@@ -11,7 +10,6 @@ import java.awt.geom.Rectangle2D;
 
 public class Main {
     public static void main(String[] args) {
-        System.out.println("hello");
         JFrame window = new JFrame();
         window.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         window.setBounds(30, 30, 370, 500);
@@ -63,11 +61,13 @@ class MyCanvas extends JComponent {
         Graphics2D g2d = (Graphics2D) g;
 
         Font openSans = new Font("Open Sans", Font.PLAIN, 12);
-        g.setFont(openSans);
-        FontRenderContext context= g2d.getFontRenderContext();
+        Font bigOpenSans = new Font("Open Sans", Font.PLAIN, 24);
+        g.setFont(bigOpenSans);
+
+        FontRenderContext context = g2d.getFontRenderContext();
 
         String message = "LOADING...";
-        Rectangle2D messageSize = openSans.getStringBounds(message, context);
+        Rectangle2D messageSize = bigOpenSans.getStringBounds(message, context);
 
         g2d.setRenderingHint(RenderingHints.KEY_TEXT_ANTIALIASING,
                 RenderingHints.VALUE_TEXT_ANTIALIAS_LCD_HRGB);
@@ -81,11 +81,11 @@ class MyCanvas extends JComponent {
 
         if (this.load) {
             g2d.drawString(message, (float) (d.width / 2. - messageSize.getWidth() / 2.), (float) (d.height / 2. - messageSize.getHeight() / 2.));
-            this.loadArrows = new Thread(chart::update);
+            this.loadArrows = new Thread(chart::update, "Arrow tracer");
             this.loadArrows.start();
-            this.load =false;
+            this.load = false;
         } else {
-            if (this.loadArrows != null){
+            if (this.loadArrows != null) {
                 try {
                     this.loadArrows.join();
                 } catch (InterruptedException e) {
@@ -93,6 +93,7 @@ class MyCanvas extends JComponent {
                 }
                 this.loadArrows = null;
             }
+            g.setFont(openSans);
             chart.draw(g2d);
         }
     }

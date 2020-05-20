@@ -26,7 +26,7 @@ public class Arrow implements Drawable {
     public void updatePath() {
         long start = System.currentTimeMillis();
         this.path = pathfinder.transverse(this.start(), this.end());
-        System.out.println("Tracing took: " + ((System.currentTimeMillis() - start)) / 1000.);
+        System.out.println(Thread.currentThread().getName() + " took: " + ((System.currentTimeMillis() - start) / 1000.) + " seconds");
     }
 
     private Point2D start() {

@@ -149,7 +149,7 @@ public abstract class Node implements Drawable {
 
     public Bounds getTraceBounds() {
         int offset = 7;
-        return new BoundingBox(this.X() - offset, this.Y() - offset, this.W() + 2*offset, this.H() + 2*offset);
+        return new BoundingBox(this.X() - offset, this.Y() - offset, this.W() + 2 * offset, this.H() + 2 * offset);
     }
 
 
