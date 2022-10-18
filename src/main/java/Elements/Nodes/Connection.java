@@ -25,26 +25,26 @@ public class Connection {
     public Point2D getSide(boolean offset) {
         Point2D point;
         switch (this.side) {
-            case LEFT -> {
+            case LEFT:
                 point = this.getLeft();
                 if (offset)
                     point = new Point2D.Double(this.node.getTraceBounds().getMinX() - 1, point.getY());
-            }
-            case TOP -> {
+                break;
+            case TOP:
                 point = this.getTop();
                 if (offset)
                     point = new Point2D.Double(point.getX(), this.node.getTraceBounds().getMinY() - 1);
-            }
-            case RIGHT -> {
+                break;
+            case RIGHT:
                 point = this.getRight();
                 if (offset)
                     point = new Point2D.Double(this.node.getTraceBounds().getMaxX() + 1, point.getY());
-            }
-            default -> {
+                break;
+            default:
                 point = this.getBottom();
                 if (offset)
                     point = new Point2D.Double(point.getX(), this.node.getTraceBounds().getMaxY() + 1);
-            }
+                break;
         }
         return point;
     }

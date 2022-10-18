@@ -16,6 +16,12 @@ public class FlowChart {
     }
 
     public void update() {
+        // sort nodes
+        for (NodeTree i : this.trees.subList(1,this.trees.size())) {
+            i.getBounds();
+        }
+
+        // trace arrows
         long start = System.currentTimeMillis();
         ArrayList<Arrow> arrows = new ArrayList<>();
         for (NodeTree i : this.trees) {

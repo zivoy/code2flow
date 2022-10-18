@@ -21,7 +21,7 @@ public class NodeTree {
 
     boolean arrowsValid;
 
-    boolean debug = false; // todo
+    boolean debug = true; // todo
 
     public NodeTree() {
         items = new ArrayList<>();
